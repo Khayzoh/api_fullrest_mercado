@@ -1,16 +1,19 @@
 package med.voll.api.controller;
 
 import jakarta.transaction.Transactional;
-import med.voll.api.dto.medico.DadosCadastroMedico;
-import med.voll.api.jpa.medico.Medico;
-import med.voll.api.jpa.medico.MedicoRepository;
+import jakarta.validation.Valid;
+import med.voll.api.medico.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+//necessario para informar que a classe é uma rest
 @RestController
+//definição a rota da controller
 @RequestMapping("/medicos")
 public class MedicosController {
 
@@ -20,9 +23,15 @@ public class MedicosController {
     @RequestMapping("/cadastro")
     @PostMapping
     @Transactional
-    public String medicos(@RequestBody DadosCadastroMedico dados){
+    public String medicos(@RequestBody @Valid DadosCadastroMedico dados){
         repository.save(new Medico(dados));
         return "Cadastrado";
+    }
+
+    @RequestMapping("/listar")
+    @GetMapping
+    public Page<DadosLisstagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+        return repository.findAll(paginacao).map(DadosLisstagemMedico::new);
     }
 
 }

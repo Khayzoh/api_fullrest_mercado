@@ -1,11 +1,10 @@
-package med.voll.api.jpa.endereco;
+package med.voll.api.endereco;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.dto.endereco.DadosEndereco;
 
 @Embeddable
 @Getter
