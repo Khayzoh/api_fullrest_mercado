@@ -20,18 +20,35 @@ public class MedicosController {
     @Autowired
     private MedicoRepository repository;
 
-    @RequestMapping("/cadastro")
-    @PostMapping
+    @PostMapping("/cadastro")
     @Transactional
     public String medicos(@RequestBody @Valid DadosCadastroMedico dados){
         repository.save(new Medico(dados));
         return "Cadastrado";
     }
 
-    @RequestMapping("/listar")
-    @GetMapping
+    @GetMapping("/listar")
     public Page<DadosLisstagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
-        return repository.findAll(paginacao).map(DadosLisstagemMedico::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosLisstagemMedico::new);
+    }
+
+    @PutMapping("atualizar")
+    @Transactional
+    public void atualizar(@RequestBody @Valid DadosAtualizarMedico dados){
+
+        var medico = repository.getReferenceById(dados.id());
+
+        medico.atualizar(dados);
+    }
+
+    @DeleteMapping("deletar/{id}")
+    @Transactional
+    public void deletar(@PathVariable Long id){
+
+        var medico = repository.getReferenceById(id);
+
+        medico.excluir();
+
     }
 
 }
